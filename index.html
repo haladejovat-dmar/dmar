@@ -33,6 +33,12 @@ a:focus-visible{outline:2px solid #745b43;outline-offset:3px}
  .contact{justify-content:center}
  .tag{margin-bottom:32px}
 }
+.countdown{display:flex;gap:clamp(14px,2.2vw,30px);margin:6px 0 30px}
+.cd-unit{display:flex;flex-direction:column;align-items:center;min-width:58px}
+.cd-num{font:400 clamp(34px,4vw,52px)/1 'Bodoni Moda',Georgia,serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cd-lab{font:500 9px/1.2 Manrope,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.cd-date{font:500 11px/1.4 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+@media(max-width:760px){.countdown{justify-content:center}.cd-unit{min-width:52px}}
 </style>
 </head>
 <body>
@@ -43,6 +49,13 @@ a:focus-visible{outline:2px solid #745b43;outline-offset:3px}
     <p class="kicker">Ručně tvořené kabelky</p>
     <h1>D’MAR</h1>
     <p class="lead">Brzy spustíme.</p>
+    <p class="cd-date" id="cdDate">1. prosince 2026 v 18:00</p>
+    <div class="countdown" id="countdown" role="timer" aria-live="off" aria-label="Odpočet do spuštění 1. 12. 2026 v 18:00">
+      <div class="cd-unit"><span class="cd-num" id="cdD">–</span><span class="cd-lab">dní</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cdH">–</span><span class="cd-lab">hodin</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cdM">–</span><span class="cd-lab">minut</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cdS">–</span><span class="cd-lab">sekund</span></div>
+    </div>
     <p class="tag">POMALÁ MÓDA, UHÁČKOVANÁ OKO PO OKU.</p>
     <div class="contact">
       <a href="mailto:info@dmar.cz">info@dmar.cz</a>
@@ -50,5 +63,23 @@ a:focus-visible{outline:2px solid #745b43;outline-offset:3px}
     </div>
   </div>
 </main>
+<script>
+(function(){
+ var target=Date.parse('2026-12-01T18:00:00+01:00');
+ var el={d:document.getElementById('cdD'),h:document.getElementById('cdH'),m:document.getElementById('cdM'),s:document.getElementById('cdS')};
+ function pad(n){return n<10?'0'+n:''+n}
+ function cz(n,a,b,c){return n===1?a:(n>=2&&n<=4?b:c)}
+ var labs=document.querySelectorAll('.cd-lab');
+ function tick(){
+  var t=Math.max(0,target-Date.now());
+  var d=Math.floor(t/864e5),h=Math.floor(t/36e5)%24,m=Math.floor(t/6e4)%60,s=Math.floor(t/1e3)%60;
+  el.d.textContent=d;el.h.textContent=pad(h);el.m.textContent=pad(m);el.s.textContent=pad(s);
+  labs[0].textContent=cz(d,'den','dny','dní');labs[1].textContent=cz(h,'hodina','hodiny','hodin');
+  labs[2].textContent=cz(m,'minuta','minuty','minut');labs[3].textContent=cz(s,'sekunda','sekundy','sekund');
+  if(t===0){document.querySelector('.lead').textContent='Právě spouštíme.';clearInterval(timer)}
+ }
+ var timer=setInterval(tick,1000);tick();
+})();
+</script>
 </body>
 </html>
